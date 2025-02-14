@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./css/styles.css",
+    "watch": "tailwindcss -i ./src/input.css -o ./css/styles.css --watch"
+  },
+  "name": "skill-tree",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
