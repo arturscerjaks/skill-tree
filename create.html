@@ -3,18 +3,144 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Skill Tree</title>
+        <title>Create Skill Tree</title>
         <link rel="icon" type="image/x-icon" href="./src/assets/favicon.ico">
         <link href="./css/styles.css" rel="stylesheet">
         <script defer src="./src/components/HeaderNav.js"></script>
+        <script defer src="./src/components/ModalBase.js"></script>
         <script defer src="./js/create.js"></script>
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body>
         <div id="wrapper" class="h-screen">
             <header-nav></header-nav>
-            <div id="main" class="h-full flex flex-col items-center justify-center">
-                <div id="create-container" x-data="initCreate()" class="w-full h-full"></div>
+            <modal-base></modal-base>
+            <div id="main" x-data="initCreate()" class="h-full flex flex-col items-center pt-20">
+                <div class="w-full max-w-2xl px-6 mx-auto">
+                    <!-- Success Message -->
+                    <div x-show="successMessage" x-cloak x-transition @click="successMessage = ''"
+                         class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-1">
+                        <span x-text="successMessage"></span>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div x-show="errorMessage" x-cloak x-transition @click="errorMessage = ''"
+                         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-1">
+                        <span x-text="errorMessage"></span>
+                    </div>
+                </div>
+
+                <template x-if="creationStep === 'skill-tree-list'">
+                    <div id="create-skill-tree-container" 
+                         class="w-full max-w-2xl mx-auto p-6">
+                        <!-- Create Form -->
+                        <form @submit.prevent="createTree()" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                                    Skill Tree Title
+                                </label>
+                                <input x-model="title"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="title"
+                                    type="text"
+                                    placeholder="Enter title">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Token Shape
+                                </label>
+                                <select x-model="design.tokenShape"
+                                        class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    <option value="circle">Circle</option>
+                                    <option value="square">Square</option>
+                                    <option value="hexagon">Hexagon</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Theme
+                                </label>
+                                <select x-model="design.theme"
+                                        class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    <option value="default">Default</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="light">Light</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <button class="button primary"
+                                        type="submit">
+                                    Create Skill Tree
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- List of existing trees -->
+                        <div class="mt-8">
+                            <h2 class="text-xl font-bold mb-4">Existing Skill Trees</h2>
+                            <template x-for="tree in trees" :key="tree.id">
+                                <div class="bg-white shadow-md rounded px-8 py-4 mb-4">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-start gap-2">
+                                            <h3 class="text-lg leading-none font-semibold text-ellipsis overflow-hidden" x-text="tree.title"></h3>
+                                            <button @click="viewTree(tree.id)" class="button tertiary">Edit</button>
+                                        </div>
+                                        <button @click="deleteTree(tree.id)" class="button danger">Delete</button>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <p class="text-sm text-gray-600" x-text="'Created: ' + new Date(tree.createdAt).toLocaleDateString()"></p>
+                                        <p class="text-sm text-gray-600" x-text="'Updated: ' + new Date(tree.updatedAt).toLocaleDateString()"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="creationStep === 'skill-tree'">
+                    <div id="edit-skill-tree-container"
+                         class="flex flex-col gap-4 w-full max-w-2xl mx-auto p-6">
+                        <div>
+                            <button @click="creationStep = 'skill-tree-list'; selectedTree = null" class="button tertiary"><- Back</button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-bold" x-text="selectedTree.title"></h2>
+                                <button @click="editTreeTitle()" class="button tertiary">Edit Title</button>
+                            </div>
+                            <button @click="addSkillBranch()" class="button primary">Add Skill Branch</button>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <template x-for="skillBranch in selectedTree.skillBranches" :key="skillBranch.id">
+                                <div class="flex flex-col gap-2">
+                                    <div>
+                                        <div class="flex justify-between items-center">
+                                            <h3 class="text-lg font-semibold" x-text="skillBranch.title"></h3>
+                                            <div class="flex gap-2">
+                                                <button @click="addSkillToBranch(skillBranch.id)" class="button tertiary">Add Skill</button>
+                                                <button @click="deleteSkillBranch(skillBranch.id)" class="button tertiary danger">Delete</button>
+                                            </div>
+                                        </div>
+                                        <template x-for="(skill, index) in skillBranch.skills" :key="skill.id">
+                                            <div class="mt-4 shadow-sm bg-gray-50 rounded-md py-3">
+                                                <div class="flex justify-between items-start">
+                                                    <div>
+                                                        <h4 class="text-md font-semibold" x-text="skill.title"></h4>
+                                                        <p x-show="skill.description" class="text-sm text-gray-600 mt-1" x-text="skill.description"></p>
+                                                    </div>
+                                                    <button @click="editSkill(skillBranch.id, skill.id)" class="button tertiary">Edit</button>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
     </body>

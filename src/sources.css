@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    [x-cloak] { display: none !important; }
+
+    html {
+        font-family: 'Inter', sans-serif;
+    }
+}
+
+@layer components {
+    .button {
+        @apply font-bold py-1 px-3 rounded transition-colors duration-200;
+        &.primary {
+            @apply bg-blue-500 hover:bg-blue-700 text-white;
+        }
+        &.secondary {
+            @apply bg-blue-300 hover:bg-blue-400 text-white;
+        }
+        &.tertiary {
+            @apply text-blue-500 hover:text-blue-700 rounded-none leading-none px-0 py-0 pb-0.5 border-b-2 border-blue-500 hover:border-blue-700;
+
+            &.danger {
+                @apply text-red-500 hover:text-red-700 border-red-500 hover:border-red-700 bg-transparent hover:bg-transparent;
+            }
+        }
+        &.danger {
+            @apply bg-red-500 hover:bg-red-700 text-white;
+        }
+    }
+}
