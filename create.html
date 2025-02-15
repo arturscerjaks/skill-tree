@@ -7,17 +7,14 @@
         <link rel="icon" type="image/x-icon" href="./src/assets/favicon.ico">
         <link href="./css/styles.css" rel="stylesheet">
         <script defer src="./src/components/HeaderNav.js"></script>
-        <script src="./js/skillTree.js"></script>
+        <script defer src="./js/create.js"></script>
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-        <script defer src="https://pixijs.download/release/pixi.min.js"></script>
     </head>
     <body>
         <div id="wrapper" class="h-screen">
             <header-nav></header-nav>
             <div id="main" class="h-full flex flex-col items-center justify-center">
-                <div id="skill-tree-app" class="w-200 h-200" x-data="initSkillTree()">
-                    
-                </div>
+                <div id="create-container" x-data="initCreate()" class="w-full h-full"></div>
             </div>
         </div>
     </body>

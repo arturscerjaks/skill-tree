@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./css/styles.css",
-    "watch": "tailwindcss -i ./src/input.css -o ./css/styles.css --watch"
+    "build": "tailwindcss -i ./src/sources.css -o ./css/styles.css",
+    "watch": "tailwindcss -i ./src/sources.css -o ./css/styles.css --watch"
   },
   "name": "skill-tree",
   "version": "1.0.0",

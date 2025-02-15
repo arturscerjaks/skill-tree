@@ -3,7 +3,7 @@ class HeaderNav extends HTMLElement {
     super();
     
     this.innerHTML = `
-      <nav class="bg-white py-4 shadow-md">
+      <nav class="bg-white py-4 shadow-md absolute top-0 left-0 z-10 w-full">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
           <a href="/" class="font-bold text-2xl text-gray-900">
             Skill Tree
